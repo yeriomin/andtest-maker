@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>The Test</title>
+    <script>
+var test = {};
+
+function attachFileListener() {
+    document.getElementById('testFile').addEventListener("change", function(event) {
+        var file = event.target.files[0];
+        var reader = new FileReader();
+        reader.addEventListener("load", function(event) {
+            test = JSON.parse(event.target.result);
+            var name = ("name" in test) ? test.name : file.name;
+            document.title = name;
+            document.getElementsByTagName("h1")[0].innerHTML = name;
+            drawTest(test);
+        });
+        reader.readAsText(file);
+    });
+}
+
+function drawTest(test) {
+    var content = "";
+    for (var questionId = 0; questionId < test.questions.length; questionId++) {
+        content += drawQuestion(questionId, test.questions[questionId]);
+    }
+    document.getElementById("container").innerHTML = "<ol>" + content + "</ol>";
+    document.getElementById("checkButton").style.display = "block";
+}
+
+function drawQuestion(questionId, question) {
+    var answers = "";
+    var inputType = question.isMultipleChoice ? "checkbox" : "radio";
+    for (var answerId = 0; answerId < question.choices.length; answerId++) {
+        var questionStringId = "question_" + questionId;
+        var answerStringId = "answer_" + questionId + "_" + answerId;
+        answers +=
+            "<li>\
+                <input type=\"" + inputType + "\" value=\"" + answerId + "\" name=\"" + questionStringId + "\" id=\"" + answerStringId + "\"/><label for=\"" + answerStringId + "\"><pre>" + question.choices[answerId] + "</pre></label>\
+            </li>\
+        ";
+    }
+    return "\
+    <li class=\"questionContainer\" id=\"" + questionStringId + "\">\
+        <pre title=\"" + question.explanation + "\" class=\"question\">" + question.question + "\
+        </pre>\
+        <ol type=\"A\" class=\"answers\">\
+        " + answers + "\
+        </ol>\
+    </li>\
+    ";
+}
+
+function getAnswer(questionId) {
+    var questionStringId = "question_" + questionId;
+    var answers = [];
+    var answerElements = document.getElementsByName(questionStringId);
+    for (var num = 0; num < answerElements.length; num++) {
+        if (answerElements[num].checked == true) {
+            answers.push(num);
+        }
+    }
+    return answers;
+}
+
+function isCorrect(given, correct) {
+    var isCorrect = given.length == correct.length;
+    if (isCorrect) {
+        for (var num = 0; num < given.length; num++) {
+            if (correct.indexOf(given[num]) == -1) {
+                isCorrect = false;
+                break;
+            }
+        }
+    }
+    return isCorrect;
+}
+
+function checkAnswers() {
+    var correct = 0;
+    for (var questionId = 0; questionId < test.questions.length; questionId++) {
+        var questionStringId = "question_" + questionId;
+        var givenAnswer = getAnswer(questionId);
+        var currentCorrect = isCorrect(givenAnswer, test.questions[questionId].correct);
+        document.getElementById(questionStringId).style.backgroundColor = currentCorrect ? "#CCFFCC" : "#FFCCCC";
+        var answers = document.getElementsByName(questionStringId);
+        for (var num = 0; num < answers.length; num++) {
+            var answerCorrect = (test.questions[questionId].correct.indexOf(num) != -1 && answers[num].checked == true)
+                || (test.questions[questionId].correct.indexOf(num) == -1 && answers[num].checked != true)
+            ;
+            answers[num].parentNode.style.backgroundColor = answerCorrect ? "#99FF99" : "#FF9999";
+        }
+        if (currentCorrect) {
+            correct++;
+        }
+    }
+    var scoreString = (correct/test.questions.length).toFixed(2) + "% (" + correct + "/" + test.questions.length + ")";
+    var scpreElement = document.getElementById("score");
+    scoreElement.innerHTML = scoreString;
+    scoreElement.style.display = "block";
+}
+</script>
+    <style>
+#container>ol>li {
+    padding-bottom: 15px;
+}
+
+#checkButton, #score {
+    display: none;
+}
+
+div {
+    padding-top: 10px;
+}
+</style>
+</head>
+<body onload="attachFileListener();">
+<h1>The Test</h1>
+<div id="container"></div>
+<div><input type="button" id="checkButton" value="Check!" onclick="checkAnswers();"/></div>
+<div id="score"></div>
+<div><input type="file" id="testFile" /></div>
+</body>
+</html>
