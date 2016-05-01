@@ -20,6 +20,12 @@ function attachFileListener() {
     });
 }
 
+function entities(str) {
+    var p = document.createElement("p");
+    p.textContent = str;
+    return p.innerHTML;
+}
+
 function drawTest(test) {
     var content = "";
     for (var questionId = 0; questionId < test.questions.length; questionId++) {
@@ -35,15 +41,19 @@ function drawQuestion(questionId, question) {
     for (var answerId = 0; answerId < question.choices.length; answerId++) {
         var questionStringId = "question_" + questionId;
         var answerStringId = "answer_" + questionId + "_" + answerId;
+        var answerString = question.choices[answerId];
+        if (answerString.indexOf("\n") != -1) {
+            answerString = "<pre>" + answerString + "</pre>";
+        }
         answers +=
             "<li>\
-                <input type=\"" + inputType + "\" value=\"" + answerId + "\" name=\"" + questionStringId + "\" id=\"" + answerStringId + "\"/><label for=\"" + answerStringId + "\"><pre>" + question.choices[answerId] + "</pre></label>\
+                <input type=\"" + inputType + "\" value=\"" + answerId + "\" name=\"" + questionStringId + "\" id=\"" + answerStringId + "\"/><label for=\"" + answerStringId + "\">" + answerString + "</label>\
             </li>\
         ";
     }
     return "\
     <li class=\"questionContainer\" id=\"" + questionStringId + "\">\
-        <pre title=\"" + question.explanation + "\" class=\"question\">" + question.question + "\
+        <pre title=\"" + question.explanation + "\" class=\"question\">" + entities(question.question) + "\
         </pre>\
         <ol type=\"A\" class=\"answers\">\
         " + answers + "\
