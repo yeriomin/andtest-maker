@@ -47,13 +47,13 @@ function drawQuestion(questionId, question) {
         }
         answers +=
             "<li>\
-                <input type=\"" + inputType + "\" value=\"" + answerId + "\" name=\"" + questionStringId + "\" id=\"" + answerStringId + "\"/><label for=\"" + answerStringId + "\">" + answerString + "</label>\
+                <input type=\"" + inputType + "\" value=\"" + answerId + "\" name=\"" + questionStringId + "\" id=\"" + answerStringId + "\"/><label for=\"" + answerStringId + "\">" + entities(answerString) + "</label>\
             </li>\
         ";
     }
     return "\
     <li class=\"questionContainer\" id=\"" + questionStringId + "\">\
-        <pre title=\"" + question.explanation + "\" class=\"question\">" + entities(question.question) + "\
+        <pre title=\"" + entities(question.explanation) + "\" class=\"question\">" + entities(question.question) + "\
         </pre>\
         <ol type=\"A\" class=\"answers\">\
         " + answers + "\
