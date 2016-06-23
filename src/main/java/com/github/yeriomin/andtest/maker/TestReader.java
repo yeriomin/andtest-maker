@@ -48,7 +48,7 @@ public class TestReader {
 
     private QuestionMultipleChoice constructQuestion(String questionString) {
         QuestionMultipleChoice question = new QuestionMultipleChoice();
-        ArrayList<String> answers = new ArrayList<>(Arrays.asList(questionString.split("\\n[a-zA-Z]\\.")));
+        ArrayList<String> answers = new ArrayList<>(Arrays.asList(questionString.split("\\n[a-zA-Z][\\.\\)]")));
         question.setQuestion(answers.remove(0).trim());
         ArrayList<String> choices = answers.stream().map(String::trim).collect(Collectors.toCollection(ArrayList::new));
         question.setChoices(choices);

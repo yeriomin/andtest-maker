@@ -43,11 +43,11 @@ function drawQuestion(questionId, question) {
         var answerStringId = "answer_" + questionId + "_" + answerId;
         var answerString = question.choices[answerId];
         if (answerString.indexOf("\n") != -1) {
-            answerString = "<pre>" + answerString + "</pre>";
+            answerString = "<pre>" + entities(answerString) + "</pre>";
         }
         answers +=
             "<li>\
-                <input type=\"" + inputType + "\" value=\"" + answerId + "\" name=\"" + questionStringId + "\" id=\"" + answerStringId + "\"/><label for=\"" + answerStringId + "\">" + entities(answerString) + "</label>\
+                <input type=\"" + inputType + "\" value=\"" + answerId + "\" name=\"" + questionStringId + "\" id=\"" + answerStringId + "\"/><label for=\"" + answerStringId + "\">" + answerString + "</label>\
             </li>\
         ";
     }
