@@ -41,9 +41,9 @@ function drawQuestion(questionId, question) {
     for (var answerId = 0; answerId < question.choices.length; answerId++) {
         var questionStringId = "question_" + questionId;
         var answerStringId = "answer_" + questionId + "_" + answerId;
-        var answerString = question.choices[answerId];
+        var answerString = entities(question.choices[answerId]);
         if (answerString.indexOf("\n") != -1) {
-            answerString = "<pre>" + entities(answerString) + "</pre>";
+            answerString = "<pre>" + answerString + "</pre>";
         }
         answers +=
             "<li>\
